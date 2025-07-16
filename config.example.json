@@ -9,6 +9,6 @@
   "log_level": "INFO",
   "auto_restart": true,
   "notification": false,
-  "auto_reconnect_interval": 86400,
+  "auto_reconnect_interval": 10800,
   "force_reconnect": true
 } 

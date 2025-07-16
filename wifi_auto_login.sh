@@ -19,7 +19,7 @@ show_help() {
     echo "Options:"
     echo "  setup           - Setup konfigurasi awal (username dan password)"
     echo "  login           - Login sekali ke hotspot"
-    echo "  daemon          - Jalankan sebagai daemon (terus memantau dengan auto reconnect 24 jam)"
+    echo "  daemon          - Jalankan sebagai daemon (terus memantau dengan auto reconnect 3 jam)"
     echo "  status          - Cek status koneksi dan reconnect"
     echo "  force-reconnect - Paksa reconnect sekarang"
     echo "  install         - Install dependencies dan setup service"
@@ -124,7 +124,7 @@ run_daemon() {
     check_python_script
     check_python3
     
-    echo "Menjalankan WiFi Auto Login Daemon dengan auto reconnect 24 jam..."
+    echo "Menjalankan WiFi Auto Login Daemon dengan auto reconnect 3 jam..."
     echo "Tekan Ctrl+C untuk menghentikan"
     python3 "$PYTHON_SCRIPT" --daemon
 }

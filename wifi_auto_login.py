@@ -33,7 +33,7 @@ class WiFiAutoLogin:
         })
         self.config = self.load_config()
         self.last_login_time = None
-        self.reconnect_interval = 24 * 60 * 60  # 24 jam dalam detik
+        self.reconnect_interval = 3 * 60 * 60  # 3 jam dalam detik
         self.load_last_login_time()
         
     def load_config(self):
@@ -51,7 +51,7 @@ class WiFiAutoLogin:
                     "check_interval": 30,  # detik
                     "max_retries": 3,
                     "timeout": 10,
-                    "auto_reconnect_interval": 24 * 60 * 60,  # 24 jam dalam detik
+                    "auto_reconnect_interval": 3 * 60 * 60,  # 3 jam dalam detik
                     "force_reconnect": True
                 }
                 self.save_config(default_config)
@@ -253,18 +253,18 @@ class WiFiAutoLogin:
     
     def run_daemon(self):
         """Jalankan sebagai daemon untuk terus memantau koneksi"""
-        logger.info("Memulai WiFi Auto Login Daemon dengan auto reconnect 24 jam")
+        logger.info("Memulai WiFi Auto Login Daemon dengan auto reconnect 3 jam")
         
         while True:
             try:
                 current_time = datetime.now()
                 force_reconnect_needed = False
                 
-                # Cek apakah perlu force reconnect (setelah 24 jam)
+                # Cek apakah perlu force reconnect (setelah 3 jam)
                 if (self.last_login_time and 
                     self.config.get('force_reconnect', True) and
-                    (current_time - self.last_login_time).total_seconds() >= self.config.get('auto_reconnect_interval', 24*60*60)):
-                    logger.info("Sudah 24 jam sejak login terakhir, melakukan force reconnect...")
+                    (current_time - self.last_login_time).total_seconds() >= self.config.get('auto_reconnect_interval', 3*60*60)):
+                    logger.info("Sudah 3 jam sejak login terakhir, melakukan force reconnect...")
                     force_reconnect_needed = True
                 
                 # Cek apakah sudah terhubung ke internet
