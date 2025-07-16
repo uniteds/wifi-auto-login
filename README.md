@@ -7,9 +7,11 @@ Script untuk mengotomatisasi login ke WiFi hotspot yang memerlukan login page, s
 - ✅ Auto login ke hotspot dengan login page
 - ✅ Deteksi otomatis form login
 - ✅ Mode daemon untuk monitoring terus menerus
+- ✅ **Auto reconnect setiap 24 jam untuk menghindari expire login**
 - ✅ Service systemd untuk auto-start saat boot
 - ✅ Logging lengkap
 - ✅ Konfigurasi mudah
+- ✅ Status monitoring dan force reconnect manual
 
 ## Persyaratan
 
@@ -69,8 +71,22 @@ Masukkan username dan password hotspot Anda ketika diminta.
 ### Jalankan sebagai Daemon
 
 ```bash
-# Jalankan daemon (monitoring terus menerus)
+# Jalankan daemon (monitoring terus menerus dengan auto reconnect 24 jam)
 ./wifi_auto_login.sh daemon
+```
+
+### Cek Status
+
+```bash
+# Tampilkan status koneksi dan reconnect
+./wifi_auto_login.sh status
+```
+
+### Force Reconnect
+
+```bash
+# Paksa reconnect sekarang (tanpa menunggu 24 jam)
+./wifi_auto_login.sh force-reconnect
 ```
 
 ### Install Service (Auto-start saat boot)
@@ -117,7 +133,9 @@ File konfigurasi disimpan di `/etc/wifi_auto_login/config.json`:
   "password": "your_password",
   "check_interval": 30,
   "max_retries": 3,
-  "timeout": 10
+  "timeout": 10,
+  "auto_reconnect_interval": 86400,
+  "force_reconnect": true
 }
 ```
 
@@ -129,6 +147,8 @@ File konfigurasi disimpan di `/etc/wifi_auto_login/config.json`:
 - `check_interval`: Interval pengecekan koneksi (detik)
 - `max_retries`: Jumlah maksimal percobaan login
 - `timeout`: Timeout untuk request HTTP (detik)
+- `auto_reconnect_interval`: Interval auto reconnect dalam detik (default: 86400 = 24 jam)
+- `force_reconnect`: Aktifkan/nonaktifkan fitur auto reconnect (default: true)
 
 ## Troubleshooting
 

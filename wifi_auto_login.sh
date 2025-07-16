@@ -17,19 +17,23 @@ show_help() {
     echo "Penggunaan: $0 [OPTION]"
     echo ""
     echo "Options:"
-    echo "  setup     - Setup konfigurasi awal (username dan password)"
-    echo "  login     - Login sekali ke hotspot"
-    echo "  daemon    - Jalankan sebagai daemon (terus memantau)"
-    echo "  install   - Install dependencies dan setup service"
-    echo "  uninstall - Hapus service dan file konfigurasi"
-    echo "  status    - Cek status service"
-    echo "  logs      - Tampilkan log"
-    echo "  help      - Tampilkan bantuan ini"
+    echo "  setup           - Setup konfigurasi awal (username dan password)"
+    echo "  login           - Login sekali ke hotspot"
+    echo "  daemon          - Jalankan sebagai daemon (terus memantau dengan auto reconnect 24 jam)"
+    echo "  status          - Cek status koneksi dan reconnect"
+    echo "  force-reconnect - Paksa reconnect sekarang"
+    echo "  install         - Install dependencies dan setup service"
+    echo "  uninstall       - Hapus service dan file konfigurasi"
+    echo "  service-status  - Cek status service systemd"
+    echo "  logs            - Tampilkan log"
+    echo "  help            - Tampilkan bantuan ini"
     echo ""
     echo "Contoh:"
-    echo "  $0 setup    # Setup username dan password"
-    echo "  $0 login    # Login sekali"
-    echo "  $0 daemon   # Jalankan sebagai daemon"
+    echo "  $0 setup           # Setup username dan password"
+    echo "  $0 login           # Login sekali"
+    echo "  $0 daemon          # Jalankan sebagai daemon"
+    echo "  $0 status          # Cek status koneksi"
+    echo "  $0 force-reconnect # Paksa reconnect"
 }
 
 # Fungsi untuk cek apakah script Python ada
@@ -120,9 +124,26 @@ run_daemon() {
     check_python_script
     check_python3
     
-    echo "Menjalankan WiFi Auto Login Daemon..."
+    echo "Menjalankan WiFi Auto Login Daemon dengan auto reconnect 24 jam..."
     echo "Tekan Ctrl+C untuk menghentikan"
     python3 "$PYTHON_SCRIPT" --daemon
+}
+
+# Fungsi untuk cek status koneksi
+check_connection_status() {
+    check_python_script
+    check_python3
+    
+    python3 "$PYTHON_SCRIPT" --status
+}
+
+# Fungsi untuk force reconnect
+force_reconnect() {
+    check_python_script
+    check_python3
+    
+    echo "Melakukan force reconnect..."
+    python3 "$PYTHON_SCRIPT" --force-reconnect
 }
 
 # Fungsi untuk install service
@@ -190,7 +211,7 @@ uninstall_service() {
 }
 
 # Fungsi untuk cek status service
-check_status() {
+check_service_status() {
     if systemctl is-active --quiet wifi-auto-login.service; then
         echo "Status: Service sedang berjalan"
         echo ""
@@ -222,14 +243,20 @@ case "${1:-help}" in
     daemon)
         run_daemon
         ;;
+    status)
+        check_connection_status
+        ;;
+    force-reconnect)
+        force_reconnect
+        ;;
     install)
         install_service
         ;;
     uninstall)
         uninstall_service
         ;;
-    status)
-        check_status
+    service-status)
+        check_service_status
         ;;
     logs)
         show_logs
